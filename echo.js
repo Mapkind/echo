@@ -1,8 +1,5 @@
 
 let REGISTRY_ID = "110070391939";
-//let REGISTRY_ID = "110003476462";
-
-//https://echodata.epa.gov/echo/dfr_rest_services.get_dfr?output=JSON&p_id=110070391939&p_gt5yr=N
 
 async function getData(){
 

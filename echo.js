@@ -2,18 +2,15 @@ window.onload = function() {
     let REGISTRY_ID;
 
     const buttonMenu = document.getElementById("buttonMenuDiv");
-    //buttonMenu.style.width = "100px"; div.style.height = "100px";
-    console.log("buttonMenu: ",buttonMenu);
 
     const submitButton = document.createElement('button');
     submitButton.innerHTML = "GIMME THE DATA";
-    //submitButton.style.width = "100px"; submitButton.style.height = "100px";
+    
     const idInput = document.createElement("input");
     idInput.setAttribute("type", "text");
     idInput.setAttribute("placeholder", "FRS ID");
     idInput.setAttribute("id", "idInput");
 
-    //document.body.appendChild(buttonMenu);
     buttonMenu.appendChild(idInput);
     buttonMenu.appendChild(submitButton);
 

@@ -46,26 +46,34 @@ window.onload = function() {
     }
 
     // Recursive function to render JSON with expandable arrays
-    function renderJSON(obj, container) {
+    function renderJSON(obj, container, propName = null, expandPropName = null) {
+        expandPropName = "Results"
         if (Array.isArray(obj)) {
             const arrayWrapper = document.createElement('div');
             arrayWrapper.style.marginLeft = '20px';
 
             const toggleBtn = document.createElement('button');
-            toggleBtn.textContent = `[+] Array(${obj.length})`;
+            const label = propName ? `<b>${propName}</b> (${obj.length})` : `[Array(${obj.length})]`;
+            toggleBtn.innerHTML = `[+] ${label}`;
             toggleBtn.style.cursor = 'pointer';
-            toggleBtn.style.marginBottom = '2px';
+            toggleBtn.style.marginBottom = '5px';
 
             const contentDiv = document.createElement('div');
             contentDiv.style.display = 'none';
 
+            // Expand by default if propName matches expandPropName
+            if (propName && expandPropName && propName === expandPropName) {
+                contentDiv.style.display = 'block';
+                toggleBtn.textContent = `[-] ${label}`;
+            }
+
             toggleBtn.onclick = function() {
                 if (contentDiv.style.display === 'none') {
                     contentDiv.style.display = 'block';
-                    toggleBtn.textContent = `[-] Array(${obj.length})`;
+                    toggleBtn.innerHTML = `[-] ${label}`;
                 } else {
                     contentDiv.style.display = 'none';
-                    toggleBtn.textContent = `[+] Array(${obj.length})`;
+                    toggleBtn.innerHTML = `[+] ${label}`;
                 }
             };
 
@@ -73,27 +81,85 @@ window.onload = function() {
                 const itemDiv = document.createElement('div');
                 itemDiv.style.marginLeft = '20px';
                 itemDiv.innerHTML = `<b>[${idx}]</b>: `;
-                renderJSON(item, itemDiv);
+                renderJSON(item, itemDiv, null, expandPropName);
                 contentDiv.appendChild(itemDiv);
             });
 
             arrayWrapper.appendChild(toggleBtn);
             arrayWrapper.appendChild(contentDiv);
             container.appendChild(arrayWrapper);
-        } else if (typeof obj === 'object' && obj !== null) {
+        } 
+        else if (typeof obj === 'object' && obj !== null) {
             const objWrapper = document.createElement('div');
             objWrapper.style.marginLeft = '20px';
-            for (let key in obj) {
-                const keyDiv = document.createElement('div');
-                keyDiv.innerHTML = `<b>${key}</b>: `;
-                renderJSON(obj[key], keyDiv);
-                objWrapper.appendChild(keyDiv);
-            }
+
+            const keys = Object.keys(obj);
+            //if (keys.length > 0) {
+                const toggleBtn = document.createElement('button');
+                //toggleBtn.style.marginBottom = '40px';
+                const label = propName ? `<b>${propName}</b> (${keys.length})` : `(${keys.length})`;
+                if(keys.length > 0){
+                    toggleBtn.innerHTML = `[+] ${label}`;
+                    toggleBtn.onclick = function() {
+                        if (contentDiv.style.display === 'none') {
+                            contentDiv.style.display = 'block';
+                            toggleBtn.innerHTML = `[-] ${label}`;
+                        } else {
+                            contentDiv.style.display = 'none';
+                            toggleBtn.innerHTML = `[+] ${label}`;
+                        }
+                    };
+                }
+                else{
+                    toggleBtn.innerHTML = `[x] ${label}`;
+                }
+                
+                toggleBtn.style.cursor = 'pointer';
+                toggleBtn.style.marginBottom = '5px';
+
+                const contentDiv = document.createElement('div');
+                contentDiv.style.display = 'none';
+
+
+
+                keys.forEach(key => {
+                    const propDiv = document.createElement('div');
+                    propDiv.style.marginLeft = '20px';
+                    // Add property name in bold
+                    //const propLabel = document.createElement('span');
+                    //propLabel.innerHTML = `<b>${key}</b>: `;
+                    //propDiv.appendChild(propLabel);
+                    renderJSON(obj[key], propDiv, key, expandPropName);
+                    contentDiv.appendChild(propDiv);
+                });
+
+                objWrapper.appendChild(toggleBtn);
+                objWrapper.appendChild(contentDiv);
+            //} 
+            /*else {
+                objWrapper.textContent = '{}';
+            }*/
             container.appendChild(objWrapper);
         } else {
             const valSpan = document.createElement('span');
             valSpan.textContent = obj;
-            container.appendChild(valSpan);
+
+            if (propName) {
+                // Don't overwrite container, just append
+                var spanDiv = document.createElement('div');
+                spanDiv.style.marginBottom = '5px';
+                const labelSpan = document.createElement('span');
+                labelSpan.innerHTML = `<b>${propName}</b>: `;
+                labelSpan.style.marginLeft = '20px';
+                spanDiv.appendChild(labelSpan);
+                spanDiv.appendChild(valSpan);
+                container.appendChild(spanDiv);
+            } else {
+                var spanDiv = document.createElement('div');
+                spanDiv.style.marginBottom = '5px';
+                spanDiv.appendChild(valSpan);
+                container.appendChild(spanDiv);
+            }
         }
     }
 };

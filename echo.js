@@ -36,6 +36,7 @@ window.onload = function() {
                 return response.json();
             })
             .then(data => {
+                console.log("Data: ",data);
                 renderJSON(data, jsonContainer);
             })
             .catch(error => {

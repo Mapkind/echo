@@ -1,6 +1,8 @@
 window.onload = function() {
     let REGISTRY_ID;
 
+    let facilityCodes = [];
+
     const buttonMenu = document.getElementById("buttonMenuDiv");
 
     const submitButton = document.createElement('button');
@@ -37,7 +39,7 @@ window.onload = function() {
             })
             .then(data => {
                 console.log("Data: ",data);
-                renderJSON(data, jsonContainer);
+                renderJSON(data, jsonContainer, "Data", "Data");
             })
             .catch(error => {
                 jsonContainer.innerHTML = `<span style="color:red;">Fetch error: ${error}</span>`;
@@ -46,8 +48,8 @@ window.onload = function() {
     }
 
     // Recursive function to render JSON with expandable arrays
-    function renderJSON(obj, container, propName = null, expandPropName = null) {
-        expandPropName = "Results"
+    function renderJSON(obj, container, propName, expandPropName) {
+        //expandPropName = "Results"
         if (Array.isArray(obj)) {
             const arrayWrapper = document.createElement('div');
             arrayWrapper.style.marginLeft = '20px';
@@ -64,7 +66,11 @@ window.onload = function() {
             // Expand by default if propName matches expandPropName
             if (propName && expandPropName && propName === expandPropName) {
                 contentDiv.style.display = 'block';
-                toggleBtn.textContent = `[-] ${label}`;
+                toggleBtn.innerHTML = `[-] ${label}`;
+
+                if(expandPropName == "Data"){
+                    expandPropName = "Results";
+                }
             }
 
             toggleBtn.onclick = function() {
@@ -120,7 +126,15 @@ window.onload = function() {
                 const contentDiv = document.createElement('div');
                 contentDiv.style.display = 'none';
 
+            // Expand by default if propName matches expandPropName
+            if (propName && expandPropName && propName === expandPropName) {
+                contentDiv.style.display = 'block';
+                toggleBtn.innerHTML = `[-] ${label}`;
 
+                if(expandPropName == "Data"){
+                    expandPropName = "Results";
+                }
+            }
 
                 keys.forEach(key => {
                     const propDiv = document.createElement('div');
